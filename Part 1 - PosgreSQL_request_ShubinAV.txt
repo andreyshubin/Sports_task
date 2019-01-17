@@ -1,0 +1,18 @@
+SELECT tag_id, count(*) AS ct
+INTO temptable
+FROM   sports_posts i
+     , unnest(tags & '{1,2,3,4,5,6,7,8}'::int[]) tag_id
+WHERE  tags && '{1,2,3,4,5,6,7,8}'::int[]
+GROUP  BY tag_id
+ORDER  BY count(*) DESC;
+
+SELECT name as team_name, ct as number_of_mentions
+FROM temptable
+INNER JOIN sports_tags
+ON temptable.tag_id = sports_tags.tag_id
+ORDER BY ct DESC;
+
+SELECT post_id AS most_poputal_post, icount(tags::int[]) AS tags_number
+FROM sports_posts
+ORDER BY tags_number DESC
+LIMIT 1;
